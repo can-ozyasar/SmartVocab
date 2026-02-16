@@ -2,10 +2,10 @@ using System;
 
 namespace SmartVocab.Domain.Common
 {
-    // abstract: Bu sınıftan tek başına nesne üretilemez, sadece miras alınır.
+    // abstract: bu sınıftan tek başına nesne üretimez, sadece miras alınır.
     public abstract class BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid(); // Unique ID
+        public Guid Id { get; set; } = Guid.NewGuid(); // eşsiz ID
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
