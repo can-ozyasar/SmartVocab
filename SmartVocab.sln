@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartVocab.Domain", "SmartVocab.Domain\SmartVocab.Domain.csproj", "{F2A7C91C-E81C-487B-A8A3-2C345EF9F81B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartVocab.Application", "SmartVocab.Application\SmartVocab.Application.csproj", "{DA04CB56-D48F-4A37-B4EE-AA6CE37960D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartVocab.Infrastructure", "SmartVocab.Infrastructure\SmartVocab.Infrastructure.csproj", "{13B882F7-A4FA-41CB-8CD0-D86E285FFB2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartVocab.API", "SmartVocab.API\SmartVocab.API.csproj", "{536B8963-06D8-4978-8302-CDBAB90EBE56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartVocab.Tests", "SmartVocab.Tests\SmartVocab.Tests.csproj", "{F90E2F7D-B5FA-457A-B186-C58DEC88002C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2A7C91C-E81C-487B-A8A3-2C345EF9F81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A7C91C-E81C-487B-A8A3-2C345EF9F81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A7C91C-E81C-487B-A8A3-2C345EF9F81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A7C91C-E81C-487B-A8A3-2C345EF9F81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA04CB56-D48F-4A37-B4EE-AA6CE37960D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA04CB56-D48F-4A37-B4EE-AA6CE37960D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA04CB56-D48F-4A37-B4EE-AA6CE37960D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA04CB56-D48F-4A37-B4EE-AA6CE37960D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13B882F7-A4FA-41CB-8CD0-D86E285FFB2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13B882F7-A4FA-41CB-8CD0-D86E285FFB2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13B882F7-A4FA-41CB-8CD0-D86E285FFB2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13B882F7-A4FA-41CB-8CD0-D86E285FFB2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536B8963-06D8-4978-8302-CDBAB90EBE56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536B8963-06D8-4978-8302-CDBAB90EBE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536B8963-06D8-4978-8302-CDBAB90EBE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536B8963-06D8-4978-8302-CDBAB90EBE56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F90E2F7D-B5FA-457A-B186-C58DEC88002C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F90E2F7D-B5FA-457A-B186-C58DEC88002C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F90E2F7D-B5FA-457A-B186-C58DEC88002C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F90E2F7D-B5FA-457A-B186-C58DEC88002C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,6 @@
+@SmartVocab.API_HostAddress = http://localhost:5084
+
+GET {{SmartVocab.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
