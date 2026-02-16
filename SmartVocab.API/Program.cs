@@ -1,16 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using SmartVocab.Infrastructure.Persistence;
-using SmartVocab.Domain.Interfaces;        // <-- BUNU EKLE (Interface'ler için)
-using SmartVocab.Infrastructure.Repositories; // <-- BUNU EKLE (Class'lar için)
+using SmartVocab.Domain.Interfaces;        
+using SmartVocab.Infrastructure.Repositories; 
 // --- SERVICES ---
 
 using SmartVocab.Application.Interfaces; 
 using SmartVocab.Application.Services;   
-
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
+using Microsoft.IdentityModel.Tokens;               
+using System.Text;                                  
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<IWordService, WordService>();
 // ==================================================================
 // 1. SERVICES (Dependency Injection Container)
 // Burası, uygulamamızın kullanacağı alet çantasını hazırladığımız yerdir.
@@ -22,7 +24,37 @@ builder.Services.AddControllers();
 // Swagger/OpenAPI dokümantasyonu için gerekli servisler.
 // API'mizi test etmek için kullanacağız.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+
+// Swagger'a "Authorize" butonu eklemek için özel ayar
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+
 
 // --- VERİTABANI BAĞLANTISI ---
 // appsettings.json dosyasından bağlantı cümlesini (Connection String) okuyoruz.
@@ -39,7 +71,28 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
+// JWT Ayarlarını oku
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(secretKey)
+    };
+});
 // ==================================================================
 // 2. BUILD (Uygulamayı İnşa Et)
 // ==================================================================
@@ -59,6 +112,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection(); // HTTP isteklerini HTTPS'e zorla (Güvenlik).
+app.UseAuthentication(); // <-- YENİ EKLENDİ (Kimlik Kontrolü)
 
 app.UseAuthorization(); // Yetkilendirme (İleride JWT ekleyeceğiz).
 
