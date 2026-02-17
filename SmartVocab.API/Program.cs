@@ -20,6 +20,17 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 // Controller'ları (API uçlarını)  
 builder.Services.AddControllers();
 
+// 1. CORS Politikasını Tanımla
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy
+            .WithOrigins("http://localhost:5173") // Frontend'in adresi (Sonunda / yok!)
+            .AllowAnyMethod() // GET, POST, PUT, DELETE hepsine izin ver
+            .AllowAnyHeader() // Token vb. başlıklarına izin ver
+            .AllowCredentials()); // Çerezlere izin ver (İleride lazım olur)
+});
+
 // Swagger/OpenAPI dokümantasyonu için gerekli servisler.
 // API'mizi test etmek için kullanacağız.
 builder.Services.AddEndpointsApiExplorer();
@@ -105,7 +116,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection(); // HTTP isteklerini HTTPS'e zorla (Güvenlik).
+//app.UseHttpsRedirection(); // HTTP isteklerini HTTPS'e zorla (Güvenlik).
+app.UseCors("AllowReactApp");
+
 app.UseAuthentication(); //
 
 app.UseAuthorization(); // Yetkilendirme (İleride JWT ekleyeceğiz).
