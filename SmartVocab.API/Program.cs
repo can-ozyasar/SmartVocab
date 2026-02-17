@@ -13,12 +13,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWordService, WordService>();
-// ==================================================================
-// 1. SERVICES (Dependency Injection Container)
-// Burası, uygulamamızın kullanacağı alet çantasını hazırladığımız yerdir.
-// ==================================================================
+builder.Services.AddScoped<IStudyService, StudyService>();
 
-// Controller'ları (API uçlarını) sisteme ekle.
+
+// Controller'ları (API uçlarını)  
 builder.Services.AddControllers();
 
 // Swagger/OpenAPI dokümantasyonu için gerekli servisler.
