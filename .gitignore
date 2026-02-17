@@ -291,6 +291,22 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Node.js / NPM / Vite
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+.sass-cache/
+
 # Visual Studio 6 build log
 *.plg
 

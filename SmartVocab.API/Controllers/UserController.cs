@@ -3,6 +3,8 @@ using SmartVocab.Application.DTOs.User;
 using SmartVocab.Application.Interfaces;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization; 
+using System.Security.Claims; //  UserId okumak için
 
 namespace SmartVocab.API.Controllers
 {
@@ -64,6 +66,66 @@ namespace SmartVocab.API.Controllers
             {
                 // Güvenlik gereği 401 Unauthorized dönmek daha doğrudur.
                 return Unauthorized(new { Error = ex.Message });
+            }
+        }
+
+
+
+
+
+
+        // GET api/user/profile
+        [HttpGet("profile")]
+        [Authorize] // Sadece giriş yapanlar
+        public async Task<IActionResult> GetProfile()
+        {
+            try
+            {
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var profile = await _userService.GetProfileAsync(userId);
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        // PUT api/user/profile
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                await _userService.UpdateProfileAsync(userId, dto);
+                return Ok(new { Message = "Profil başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        // POST api/user/change-password
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                await _userService.ChangePasswordAsync(userId, dto);
+                return Ok(new { Message = "Şifreniz başarıyla değiştirildi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
             }
         }
 
