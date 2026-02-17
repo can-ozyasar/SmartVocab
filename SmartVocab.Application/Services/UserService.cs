@@ -105,5 +105,63 @@ namespace SmartVocab.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+
+        // ... (Register ve Login metodlarının altına) ...
+
+        public async Task<UserProfileDto> GetProfileAsync(Guid userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) throw new Exception("Kullanıcı bulunamadı.");
+
+            // Entity -> DTO Dönüşümü
+            return new UserProfileDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                DailyGoalMinutes = user.DailyGoalMinutes,
+                NativeLanguage = user.NativeLanguage,
+                CreatedAt = user.CreatedAt
+            };
+        }
+
+        public async Task UpdateProfileAsync(Guid userId, UpdateProfileDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) throw new Exception("Kullanıcı bulunamadı.");
+
+            // Verileri Güncelle
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.DailyGoalMinutes = dto.DailyGoalMinutes;
+            user.NativeLanguage = dto.NativeLanguage;
+
+            _userRepository.Update(user);
+            await _unitOfWork.CommitAsync();
+        }
+
+        public async Task ChangePasswordAsync(Guid userId, ChangePasswordDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) throw new Exception("Kullanıcı bulunamadı.");
+
+            // 1. ESKİ ŞİFRE KONTROLÜ (Kritik Güvenlik)
+            bool isOldPasswordCorrect = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash);
+            if (!isOldPasswordCorrect)
+            {
+                throw new Exception("Mevcut şifreniz hatalı.");
+            }
+
+            // 2. YENİ ŞİFREYİ HASHLE
+            string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            
+            // 3. GÜNCELLE
+            user.PasswordHash = newPasswordHash;
+            
+            _userRepository.Update(user);
+            await _unitOfWork.CommitAsync();
+        }
     }
 }
