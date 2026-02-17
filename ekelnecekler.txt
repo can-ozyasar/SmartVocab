@@ -2,3 +2,5 @@ kartlardaki olayları kaydetmeyi ne zaman yapacağız ve ne sıklıkla olacak . 
 
 
 şuanda kartı çevirip biliyoruma basıyor eğer çevirmeden basarsa bu da features olarak eklenebilir belki de öğrenmesi için arkadaki anlamı ve cümlede kullanması daha mantıklı olabilir tam emin olamadım 
+
+arkada çalacak ses eklenebilir bu belki daha iyi olur öğrenmede .
