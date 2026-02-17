@@ -1,0 +1,4 @@
+kartlardaki olayları kaydetmeyi ne zaman yapacağız ve ne sıklıkla olacak . belki bir kelime başka kelimenin örnek cümlesinde geçebilir bu şekilde ilerleme ve görme daha sık olur.
+
+
+şuanda kartı çevirip biliyoruma basıyor eğer çevirmeden basarsa bu da features olarak eklenebilir belki de öğrenmesi için arkadaki anlamı ve cümlede kullanması daha mantıklı olabilir tam emin olamadım 

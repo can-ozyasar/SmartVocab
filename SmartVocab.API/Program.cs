@@ -18,7 +18,12 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 // Controller'ları (API uçlarını)  
-builder.Services.AddControllers();
+// System.Text.Json kütüphanesini kullanarak camelCase standardını zorunlu kılıyoruz.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 
 // 1. CORS Politikasını Tanımla
 builder.Services.AddCors(options =>
