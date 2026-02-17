@@ -10,5 +10,8 @@ namespace SmartVocab.Application.Interfaces
     {
         Task<Guid> CreateWordAsync(CreateWordDto dto);
         Task<IEnumerable<Word>> GetAllWordsAsync();
+        
+        Task UpdateWordAsync(UpdateWordDto dto);
+        Task DeleteWordAsync(Guid id);
     }
 }

@@ -4,3 +4,10 @@ kartlardaki olayları kaydetmeyi ne zaman yapacağız ve ne sıklıkla olacak . 
 şuanda kartı çevirip biliyoruma basıyor eğer çevirmeden basarsa bu da features olarak eklenebilir belki de öğrenmesi için arkadaki anlamı ve cümlede kullanması daha mantıklı olabilir tam emin olamadım 
 
 arkada çalacak ses eklenebilir bu belki daha iyi olur öğrenmede .
+
+
+
+
+
+kelime ile resim eklenmeli mi bu ekleme ile öğrenme iyileştirilebilir ,arka planda renk yada desen öğrenmeyi etkiler mi . yada arkaplan akıcı olursa sanki  z kuşağındaki odaklanma sorunu gibi bazı videolarda konuşan kişiler arkaya saçma oyun videolar koyuyor ve izleniyorlar.
+ses öğrenmeyi etkiler mi frekans sesleri sözsüz müzikler.

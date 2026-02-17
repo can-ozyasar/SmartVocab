@@ -5,6 +5,7 @@ namespace SmartVocab.Application.DTOs.Word
 {
     public class CreateWordDto
     {
+        
         [Required]
         public string Text { get; set; } // "Ambiguous"
         

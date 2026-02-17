@@ -42,5 +42,39 @@ namespace SmartVocab.API.Controllers
             var words = await _wordService.GetAllWordsAsync();
             return Ok(words);
         }
+
+        
+        [HttpPut]
+public async Task<IActionResult> Update([FromBody] UpdateWordDto dto)
+{
+    if (!ModelState.IsValid) return BadRequest(ModelState);
+    try
+    {
+        await _wordService.UpdateWordAsync(dto);
+        return Ok(new { Message = "Kelime güncellendi." });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { Error = ex.Message });
+    }
+}
+
+[HttpDelete("{id}")]
+public async Task<IActionResult> Delete(Guid id)
+{
+    try
+    {
+        await _wordService.DeleteWordAsync(id);
+        return Ok(new { Message = "Kelime silindi." });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { Error = ex.Message });
+    }
+}
+
+
+
+
     }
 }
