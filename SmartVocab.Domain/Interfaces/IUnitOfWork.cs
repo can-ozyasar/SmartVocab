@@ -7,5 +7,6 @@ namespace SmartVocab.Domain.Interfaces
     {
         // Değişiklikleri veritabanına yazar (SaveChanges)
         Task<int> CommitAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
