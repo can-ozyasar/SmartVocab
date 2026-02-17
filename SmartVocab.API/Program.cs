@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWordService, WordService>();
 builder.Services.AddScoped<IStudyService, StudyService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 // Controller'ları (API uçlarını)  
@@ -91,15 +92,10 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(secretKey)
     };
 });
-// ==================================================================
-// 2. BUILD (Uygulamayı İnşa Et)
-// ==================================================================
+
 var app = builder.Build();
 
-// ==================================================================
-// 3. MIDDLEWARE PIPELINE (HTTP İstek Hattı)
-// Gelen isteğin nasıl işleneceğini sırayla belirtiyoruz.
-// ==================================================================
+
 
 // Sadece geliştirme ortamındaysak Swagger'ı aç.
 // Prodüksiyonda güvenlik açığı olmaması için kapatılır.
@@ -110,7 +106,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection(); // HTTP isteklerini HTTPS'e zorla (Güvenlik).
-app.UseAuthentication(); // <-- YENİ EKLENDİ (Kimlik Kontrolü)
+app.UseAuthentication(); //
 
 app.UseAuthorization(); // Yetkilendirme (İleride JWT ekleyeceğiz).
 
