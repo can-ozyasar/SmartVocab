@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmartVocab.Domain\SmartVocab.Domain.csproj" />
+    <ProjectReference Include="..\SmartVocab.Application\SmartVocab.Application.csproj" />
   </ItemGroup>
 
 </Project>

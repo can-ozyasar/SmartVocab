@@ -40,6 +40,8 @@ builder.Services.AddCors(options =>
 // API'mizi test etmek için kullanacağız.
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddScoped<IStudyRepository, StudyRepository>();
+builder.Services.AddScoped<StudyAiService>();
 
 // Swagger'a "Authorize" butonu eklemek için özel ayar
 builder.Services.AddSwaggerGen(c =>
