@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+}
+
+/*Tailwind varsayılan olarak perspective, rotate-y-180 ve backface-hidden sınıflarına sahip değildir.*/
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+
+/* --- YILDIZ YAĞMURU EFEKTİ --- */
+.stars-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px white;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
+}
+
+/* Farklı hızlar ve boyutlar için sınıflar */
+.star:nth-child(1) { left: 10%; animation-duration: 3s; animation-delay: 0s; }
+.star:nth-child(2) { left: 20%; animation-duration: 5s; animation-delay: 1s; width: 3px; height: 3px; }
+.star:nth-child(3) { left: 35%; animation-duration: 2.5s; animation-delay: 2s; }
+.star:nth-child(4) { left: 50%; animation-duration: 4s; animation-delay: 0.5s; width: 1px; height: 1px; }
+.star:nth-child(5) { left: 65%; animation-duration: 3.5s; animation-delay: 1.5s; }
+.star:nth-child(6) { left: 80%; animation-duration: 6s; animation-delay: 0.2s; width: 3px; height: 3px;}
+.star:nth-child(7) { left: 90%; animation-duration: 2s; animation-delay: 3s; }
+
+
+
+/* --- MEVCUT YILDIZ KODLARI KALSIN --- */
+
+/* --- YENİ: RIPPLE (SU HALKASI) EFEKTİ --- */
+.ripple-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: ripple-anim 8s infinite linear;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes ripple-anim {
+  0% { width: 0; height: 0; opacity: 0.5; border-width: 5px; }
+  100% { width: 150vmax; height: 150vmax; opacity: 0; border-width: 0px; }
+}
+.ripple:nth-child(1) { animation-delay: 0s; }
+.ripple:nth-child(2) { animation-delay: 2s; }
+.ripple:nth-child(3) { animation-delay: 4s; }
+.ripple:nth-child(4) { animation-delay: 6s; }
+
+
+/* --- YENİ: BREATHING (NEFES) EFEKTİ --- */
+.breathing-bg {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.366) 0%, transparent 90%);
+  animation: breathe 10s infinite ease-in-out;
+  transform-origin: center;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}

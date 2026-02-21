@@ -42,5 +42,9 @@ namespace SmartVocab.Domain.Entities
         // True ise: Dakika bazlı sorulur (1 dk, 10 dk).
         // False ise: Gün bazlı sorulur (SM-2 devreye girer).
         public bool IsLearning { get; set; } = true;
+
+
+        // Kullanıcının bu kelime için en yüksek performans gösterdiği tema (Örn: "blue", "neutral")
+        public string? BestStudyTheme { get; set; }
     }
 }

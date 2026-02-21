@@ -122,6 +122,9 @@ namespace SmartVocab.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("BestStudyTheme")
+                        .HasColumnType("text");
+
                     b.Property<int>("Box")
                         .HasColumnType("integer");
 
