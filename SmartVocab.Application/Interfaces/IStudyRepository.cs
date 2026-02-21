@@ -10,5 +10,6 @@ namespace SmartVocab.Application.Interfaces
         Task AddUserWordStateAsync(UserWordState state);
         Task SaveChangesAsync();
         Task<List<UserWordState>> GetDueWordsAsync(Guid userId, int limit);
+        Task<List<Word>> GetNewWordsAsync(Guid userId, int limit);
     }
 }

@@ -54,26 +54,27 @@ namespace SmartVocab.API.Controllers
 
         // SmartVocab.API/Controllers/StudySessionController.cs içine ekle:
 
-        [HttpGet("daily-blocks")] // Adresi 'due-words' yerine 'daily-blocks' yapmak daha anlamlı
-public async Task<IActionResult> GetDailyStudyBlocks([FromQuery] int limit = 20)
+       [HttpGet("daily-blocks")]
+// Parametrelere "[FromQuery] bool isVanilla = false" eklendi!
+public async Task<IActionResult> GetDailyStudyBlocks([FromQuery] int limit = 20, [FromQuery] bool isVanilla = false)
 {
     try
     {
-        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userIdString = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
         {
             return Unauthorized("Kullanıcı kimliği doğrulanamadı.");
         }
 
-        // AI servisinden bloklanmış veriyi çek
-        var blocks = await _aiService.GetTodayStudyBlocksAsync(userId, limit);
+        // AI servisinden bloklanmış veriyi çek (Frontend'den gelen isVanilla bilgisini de servise iletiyoruz)
+        var blocks = await _aiService.GetTodayStudyBlocksAsync(userId, limit, isVanilla);
 
-        // Toplam kelime sayısını hesapla
         var totalWords = blocks.Sum(b => b.WordCount);
 
         return Ok(new {
-            message = "Günlük AI çalışma blokları başarıyla hazırlandı.",
+            // Yanıt mesajını moda göre dinamik yaptık
+            message = isVanilla ? "Sade (Vanilla) çalışma blokları hazırlandı." : "Günlük AI çalışma blokları hazırlandı.",
             totalWords = totalWords,
             blocks = blocks
         });
@@ -84,7 +85,6 @@ public async Task<IActionResult> GetDailyStudyBlocks([FromQuery] int limit = 20)
         return StatusCode(500, $"Sunucu hatası: {ex.Message}");
     }
 }
-
 
 
     }

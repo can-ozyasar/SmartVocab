@@ -15,6 +15,10 @@ namespace SmartVocab.Application.DTOs.Dashboard
         
         // En son öğrenilen 5 kelime
         public List<string> LastLearnedWords { get; set; }
+        // --- YENİ EKLENEN VİZYONER VERİLER ---
+        public int CurrentStreak { get; set; } 
+        public List<string> StrugglingWords { get; set; } 
+        public string BestTheme { get; set; }
     }
 
     public class DailyActivityDto

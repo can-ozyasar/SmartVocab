@@ -19,41 +19,78 @@ namespace SmartVocab.Application.Services
             _repository = repository;
         }
     
-
-// ...
-
-public async Task<List<StudyBlockDto>> GetTodayStudyBlocksAsync(Guid userId, int limit = 20)
+// Metodun parametresine "bool isVanilla = false" eklendi!
+public async Task<List<StudyBlockDto>> GetTodayStudyBlocksAsync(Guid userId, int limit = 20, bool isVanilla = false)
 {
-    // 1. Veritabanından zamanı gelmiş kelimeleri çek
+    // 1. Veritabanından eski ve yeni kelimeleri çekme (Burası eski kodun aynısı)
     var dueStates = await _repository.GetDueWordsAsync(userId, limit);
+    
+    int remainingLimit = limit - dueStates.Count;
+    var newWords = new List<Word>();
 
-    // 2. Kelimeleri AI'ın belirlediği temalara göre grupla (Kümeleme/Chunking)
-    var groupedBlocks = dueStates
-        .GroupBy(state => string.IsNullOrEmpty(state.BestStudyTheme) ? "neutral" : state.BestStudyTheme)
+    if (remainingLimit > 0)
+    {
+        newWords = await _repository.GetNewWordsAsync(userId, remainingLimit);
+    }
+
+    var combinedList = dueStates.Select(state => new 
+    {
+        Word = state.Word,
+        Theme = string.IsNullOrEmpty(state.BestStudyTheme) ? "neutral" : state.BestStudyTheme
+    }).ToList();
+
+    combinedList.AddRange(newWords.Select(word => new { Word = word, Theme = "neutral" }));
+    if (combinedList.Count == 0)
+    {
+        return new List<StudyBlockDto>();
+    }
+    // --- YENİ EKLENEN KISIMLAR BURADAN BAŞLIYOR ---
+
+    // 2. KONTROL GRUBU: Kullanıcı "Sade Mod" (Vanilla) istediyse her şeyi kapat!
+    if (isVanilla)
+    {
+        return new List<StudyBlockDto>
+        {
+            new StudyBlockDto
+            {
+                Theme = "neutral",
+                BinauralBeats = false,
+                MusicVolume = 0,
+                FluidFocus = false,
+                FluidFocusType = "none",
+                EnableFliplessMastery = false,
+                WordCount = combinedList.Count,
+                Words = combinedList.Select(x => new StudyBlockWordDto { WordId = x.Word.Id, Text = x.Word.Text, Meaning = x.Word.Meaning }).ToList()
+            }
+        };
+    }
+
+    // 3. AI MODU: Gruplama ve Zengin Özellikleri Temalara Dağıtma
+    var groupedBlocks = combinedList
+        .GroupBy(x => x.Theme)
         .Select(group => new StudyBlockDto
         {
             Theme = group.Key,
             
-            // Şimdilik Labs'taki diğer özellikleri temaya göre mantıksal eşleştiriyoruz.
-            // Örn: Mor temada derin odak (Binaural) aç, Nötr temada animasyonları (Fluid) kapat.
+            // Müzik sadece mor ve mavide çalsın, şiddetleri farklı olsun
             BinauralBeats = group.Key == "purple" || group.Key == "blue", 
+            MusicVolume = group.Key == "purple" ? 40 : (group.Key == "blue" ? 30 : 0),
+            
+            // Animasyon türleri temaya göre değişsin (Maviye su dalgası, Yeşile nefes, diğerlerine yıldız)
             FluidFocus = group.Key != "neutral", 
+            FluidFocusType = group.Key == "blue" ? "ripple" : (group.Key == "green" ? "breathing" : "stars"),
             
+            // Hızlı onay (Flipless Mastery) sadece yüksek odaklı temalarda (Mor ve Turuncu) aktif olsun
+            EnableFliplessMastery = group.Key == "purple" || group.Key == "orange", 
+
             WordCount = group.Count(),
-            
-            Words = group.Select(w => new StudyBlockWordDto
-            {
-                WordId = w.WordId,
-                Text = w.Word.Text,
-                Meaning = w.Word.Meaning
-            }).ToList()
+            Words = group.Select(x => new StudyBlockWordDto { WordId = x.Word.Id, Text = x.Word.Text, Meaning = x.Word.Meaning }).ToList()
         })
-        .OrderByDescending(b => b.WordCount) // En çok kelime olan blok ilk başlasın
+        .OrderByDescending(b => b.WordCount) // En kalabalık grup önce başlasın
         .ToList();
 
-        return groupedBlocks;
-        }
-
+    return groupedBlocks;
+}
         public async Task ProcessTelemetryAsync(Guid userId, SessionTelemetryDto telemetry)
         {
             foreach (var log in telemetry.Interactions)

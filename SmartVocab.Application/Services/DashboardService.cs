@@ -121,14 +121,14 @@ namespace SmartVocab.Application.Services
             {
                 weeklyActivity.Add(new DailyActivityDto
                 {
-                    Date = date.ToString("dd.MM"),
+                    Date = date.ToString("yyyy-MM-dd"), // Frontend'in anlayacağı formata çevirdik
                     WordCount = logs.Count(l => l.CreatedAt.Date == date)
                 });
             }
 
-            // 3. SAATLİK ISI HARİTASI (Hangi saatte ne kadar başarılı?)
+            // 3. SAATLİK ISI HARİTASI
             var hourlyStats = logs
-                .GroupBy(l => l.LocalHour) // Frontend'den gelen saat verisine göre grupla
+                .GroupBy(l => l.LocalHour)
                 .Select(g => new HourlyActivityDto
                 {
                     Hour = g.Key,
@@ -138,11 +138,13 @@ namespace SmartVocab.Application.Services
                 .OrderBy(h => h.Hour)
                 .ToList();
 
+            // Tüm states verisini bir kere çekelim (Hem son öğrenilenler hem de bestTheme için kullanacağız)
+            var states = await _stateRepository.FindAsync(s => s.UserId == userId);
+
             // 4. SON ÖĞRENİLEN KELİMELER
-            // States tablosundan IsLearning=false olan en son 5 kelimeyi bul
-            var learnedStates = await _stateRepository.FindAsync(s => s.UserId == userId && !s.IsLearning);
-            var lastLearnedIds = learnedStates
-                .OrderByDescending(s => s.LastReviewedAt) // En son bakılanlar
+            var lastLearnedIds = states
+                .Where(s => !s.IsLearning)
+                .OrderByDescending(s => s.LastReviewedAt)
                 .Take(5)
                 .Select(s => s.WordId)
                 .ToList();
@@ -154,12 +156,73 @@ namespace SmartVocab.Application.Services
                 lastWords = words.Select(w => w.Text).ToList();
             }
 
+            // --- YENİ VİZYONER VERİLER BURADAN BAŞLIYOR ---
+
+            // 5. GÜNCEL SERİ (STREAK) - Senin Summary'deki harika mantığın aynısı
+            var studyDates = logs
+                .Select(l => l.CreatedAt.Date)
+                .Distinct()
+                .OrderByDescending(d => d)
+                .ToList();
+
+            int streak = 0;
+            var today = DateTime.UtcNow.Date;
+
+            if (studyDates.Any())
+            {
+                if (studyDates[0] == today || studyDates[0] == today.AddDays(-1))
+                {
+                    var checkDate = studyDates[0]; 
+                    streak = 1;
+                    for (int i = 1; i < studyDates.Count; i++)
+                    {
+                        if (studyDates[i] == checkDate.AddDays(-1))
+                        {
+                            streak++;
+                            checkDate = studyDates[i];
+                        }
+                        else break;
+                    }
+                }
+            }
+
+            // 6. ZORLANILAN KELİMELER (Struggling Words)
+            // Loglardan yanlış cevaplananları bul, WordId'ye göre grupla, en çok yanlış yapılan 5'ini al
+            var strugglingWordIds = logs
+                .Where(l => !l.IsCorrect)
+                .GroupBy(l => l.WordId)
+                .OrderByDescending(g => g.Count())
+                .Take(5)
+                .Select(g => g.Key)
+                .ToList();
+
+            var strugglingWordsList = new List<string>();
+            if (strugglingWordIds.Any())
+            {
+                var sWords = await _wordRepository.FindAsync(w => strugglingWordIds.Contains(w.Id));
+                strugglingWordsList = sWords.Select(w => w.Text).ToList();
+            }
+
+            // 7. İDEAL MOD (Best Theme)
+            // States tablosundan nötr olmayan en çok atanmış temayı bul
+            var bestTheme = states
+                .Where(s => !string.IsNullOrEmpty(s.BestStudyTheme) && s.BestStudyTheme != "neutral")
+                .GroupBy(s => s.BestStudyTheme)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefault();
+
             return new DashboardAnalyticsDto
             {
                 AccuracyRate = Math.Round(accuracy, 1),
                 WeeklyActivity = weeklyActivity,
                 HourlyActivity = hourlyStats,
-                LastLearnedWords = lastWords
+                LastLearnedWords = lastWords,
+                
+                // DTO'ya eklediğimiz yeni alanları dolduruyoruz
+                CurrentStreak = streak,
+                StrugglingWords = strugglingWordsList,
+                BestTheme = bestTheme ?? "Analiz Ediliyor"
             };
         }
     }

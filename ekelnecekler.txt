@@ -16,3 +16,9 @@ ses öğrenmeyi etkiler mi frekans sesleri sözsüz müzikler.
 
 
 ANALİZLER DOĞRU MU GRAFİK NEDEN YOK .YOĞUNLUK YANLIŞ GÖSTERİYOR HAFTALIK YOĞUNLUK YÜKSEK DİYOR AMA YOĞUNLUK YOKTU .
+
+
+veri tabanındaki bazı verilr örneği doğum tarihi level gibi ve daha başka verilerin ugyulamada karşılığı yok .
+
+
+En Büyük Avantajı (AI İçin): Global veri analizi yapabilirsin. Farklı kullanıcıların aynı kelimeye verdiği tepkileri ölçerek, "Bu kelime zordur, bunu ilk günden sorma" diyen bir model (Collaborative Filtering) eğitebilirsin.
